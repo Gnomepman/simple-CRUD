@@ -1,0 +1,20 @@
+{
+  "name": "simple-crud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gnomepman/simple-CRUD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gnomepman/simple-CRUD/issues"
+  },
+  "homepage": "https://github.com/Gnomepman/simple-CRUD#readme"
+}
