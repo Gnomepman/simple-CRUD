@@ -3,6 +3,7 @@ import http from 'http';
 import { User } from 'types';
 import url from 'url';
 import querystring from 'querystring';
+const PORT = process.env.PORT || 3000;
 
 const users: User[] = getDatabase();
 
@@ -122,6 +123,11 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(8000); // move to .env
+server.listen(PORT);
+console.log(
+  `Server running at http://localhost:${PORT} in ${
+    process.env.TS_NODE_DEV ? 'development' : 'normal?'
+  } mode`,
+);
 
 // and test - monday evening
