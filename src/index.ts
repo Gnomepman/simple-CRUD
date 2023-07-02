@@ -61,6 +61,40 @@ const server = http.createServer((req, res) => {
       sendResponse(res, 201, user);
     });
   }
+  if (pathname === '/api/users' && req.method === 'PUT') {
+    req.on('data', (data) => {
+      if (search) {
+        const [, query] = search.split('?');
+        const queryData = querystring.parse(String(query));
+        const userRequest = JSON.parse(data);
+
+        if (!Number(queryData.id)) {
+          sendResponse(res, 400, 'Invalid param type. Must be number');
+          return;
+        }
+
+        if (!userRequest.username || !userRequest.age || !userRequest.hobbies) {
+          sendResponse(res, 400, 'Required fields are missing');
+          return;
+        }
+
+        const user = users.find((user) => user.id === Number(queryData.id));
+
+        if (!user) {
+          sendResponse(res, 404, 'User not found');
+          return;
+        }
+
+        user.username = String(userRequest.username);
+        user.age = Number(userRequest.age);
+        user.hobbies = Array.from(userRequest.hobbies);
+
+        sendResponse(res, 200, user);
+      } else {
+        sendResponse(res, 404, 'Provide user`s id');
+      }
+    });
+  }
 });
 
 server.listen(8000); // move to .env
