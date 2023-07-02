@@ -41,8 +41,7 @@ const server = http.createServer((req, res) => {
     } else {
       sendResponse(res, 200, users);
     }
-  }
-  if (pathname === '/api/users' && req.method === 'POST') {
+  } else if (pathname === '/api/users' && req.method === 'POST') {
     req.on('data', (data) => {
       const userRequest = JSON.parse(data);
 
@@ -62,12 +61,10 @@ const server = http.createServer((req, res) => {
       saveDatabase(users);
       sendResponse(res, 201, user);
     });
-  }
-  if (pathname === '/api/users' && req.method === 'PUT') {
+  } else if (pathname === '/api/users' && req.method === 'PUT') {
     const { search } = url.parse(req.url || '', true);
     if (search) {
       req.on('data', (data) => {
-        console.log('entered callback');
         const [, query] = search.split('?');
         const queryData = querystring.parse(String(query));
         const userRequest = JSON.parse(data);
@@ -99,8 +96,7 @@ const server = http.createServer((req, res) => {
     } else {
       sendResponse(res, 404, 'Provide user`s id');
     }
-  }
-  if (pathname === '/api/users' && req.method === 'DELETE') {
+  } else if (pathname === '/api/users' && req.method === 'DELETE') {
     if (search) {
       const [, query] = search.split('?');
       const data = querystring.parse(String(query));
@@ -121,6 +117,8 @@ const server = http.createServer((req, res) => {
     } else {
       sendResponse(res, 404, 'Provide user`s id');
     }
+  } else {
+    sendResponse(res, 404, 'Endpoint not found');
   }
 });
 
