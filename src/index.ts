@@ -23,6 +23,8 @@ const server = http.createServer((req, res) => {
   const { pathname, search } = url.parse(req.url || '', true);
 
   if (pathname === '/api/users' && req.method === 'GET') {
+    const { search } = url.parse(req.url || '', true);
+
     if (search) {
       const [, query] = search.split('?');
       const data = querystring.parse(String(query));
@@ -62,8 +64,10 @@ const server = http.createServer((req, res) => {
     });
   }
   if (pathname === '/api/users' && req.method === 'PUT') {
-    req.on('data', (data) => {
-      if (search) {
+    const { search } = url.parse(req.url || '', true);
+    if (search) {
+      req.on('data', (data) => {
+        console.log('entered callback');
         const [, query] = search.split('?');
         const queryData = querystring.parse(String(query));
         const userRequest = JSON.parse(data);
@@ -88,12 +92,35 @@ const server = http.createServer((req, res) => {
         user.username = String(userRequest.username);
         user.age = Number(userRequest.age);
         user.hobbies = Array.from(userRequest.hobbies);
+        saveDatabase(users);
 
         sendResponse(res, 200, user);
-      } else {
-        sendResponse(res, 404, 'Provide user`s id');
+      });
+    } else {
+      sendResponse(res, 404, 'Provide user`s id');
+    }
+  }
+  if (pathname === '/api/users' && req.method === 'DELETE') {
+    if (search) {
+      const [, query] = search.split('?');
+      const data = querystring.parse(String(query));
+
+      if (!Number(data.id)) {
+        sendResponse(res, 400, 'Invalid param type. Must be number');
+        return;
       }
-    });
+
+      const index = users.findIndex((user) => user.id === Number(data.id));
+      if (index === -1) {
+        sendResponse(res, 404, 'User not found');
+        return;
+      }
+      users.splice(index, 1);
+      saveDatabase(users);
+      sendResponse(res, 204, 'User was deleted');
+    } else {
+      sendResponse(res, 404, 'Provide user`s id');
+    }
   }
 });
 
