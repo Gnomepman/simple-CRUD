@@ -75,11 +75,6 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        if (!userRequest.username || !userRequest.age || !userRequest.hobbies) {
-          sendResponse(res, 400, 'Required fields are missing');
-          return;
-        }
-
         const user = users.find((user) => user.id === Number(queryData.id));
 
         if (!user) {
@@ -87,9 +82,9 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        user.username = String(userRequest.username);
-        user.age = Number(userRequest.age);
-        user.hobbies = Array.from(userRequest.hobbies);
+        user.username = String(userRequest.username || user.username);
+        user.age = Number(userRequest.age || user.age);
+        user.hobbies = Array.from(userRequest.hobbies || user.hobbies);
         saveDatabase(users);
 
         sendResponse(res, 200, user);
@@ -129,5 +124,3 @@ console.log(
     process.env.TS_NODE_DEV ? 'development' : 'normal?'
   } mode`,
 );
-
-// and test - monday evening
